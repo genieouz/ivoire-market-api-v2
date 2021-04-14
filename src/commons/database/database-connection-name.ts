@@ -1,0 +1,1 @@
+export const databaseConnectionName: string = "ivoire-discount-database-connection";
