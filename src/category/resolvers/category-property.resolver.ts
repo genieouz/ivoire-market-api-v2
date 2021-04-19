@@ -20,10 +20,37 @@ export class CategoryPropertyResolver {
         return this.categoryService.findOneById(category.parent);
     }
 
+    @ResolveProperty(returns => [Category])
+    children(
+        @Parent() category: ICategory
+    ): Promise<ICategory[]> {
+        return this.categoryService.find({ parent: category._id });
+    }
+
     @ResolveProperty(returns => Float)
     async price(
         @Parent() category: ICategory
     ): Promise<number> {
         return (await this.productService.find({ category: category._id })).map(product => product.price).reduce((a, b) => a + b, 0);
+    }
+
+    @ResolveProperty(returns => Float)
+    async maxPrice(
+        @Parent() category: ICategory
+    ): Promise<number> {
+        const prices = (await this.productService.find({ category: category._id })).map(product => product.price);
+        if(!prices.length)
+            return 0;
+        return Math.max(...prices);
+    }
+
+    @ResolveProperty(returns => Float)
+    async minPrice(
+        @Parent() category: ICategory
+    ): Promise<number> {
+        const prices = (await this.productService.find({ category: category._id })).map(product => product.price);
+        if(!prices.length)
+            return 0;
+        return Math.min(...prices);
     }
 }

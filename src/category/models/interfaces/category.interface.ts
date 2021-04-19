@@ -6,5 +6,5 @@ export interface ICategory extends Document {
     name: string;
     owner: string;
     parent: string;
-    status: CategoryStatus
+    status: CategoryStatus;
 }

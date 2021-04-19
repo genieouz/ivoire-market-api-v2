@@ -20,6 +20,15 @@ export class Category extends GqlTimestamp {
     @Field(type => CategoryStatus)
     status: CategoryStatus;
 
+    @Field(type => [Category])
+    children: ICategory[];
+
     @Field()
     price: number;
+
+    @Field()
+    minPrice: number;
+
+    @Field()
+    maxPrice: number;
 }

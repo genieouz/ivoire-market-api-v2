@@ -10,6 +10,7 @@ import { ProductsModule } from '~/products/product.module';
 import { TasksModule } from '~/tasks/task.module';
 import { ChatMessagesModule } from '~/chat-messages/chat-message.module';
 import { DiscussionMessagesModule } from '~/discussion-messages/discussion-message.module';
+import { PaymentsModule } from './payments/payment.module';
 
 @Module({
   imports: [
@@ -44,7 +45,8 @@ import { DiscussionMessagesModule } from '~/discussion-messages/discussion-messa
     ProductsModule,
     TasksModule,
     ChatMessagesModule,
-    DiscussionMessagesModule
+    DiscussionMessagesModule,
+    PaymentsModule
   ],
 })
 export class AppModule {}

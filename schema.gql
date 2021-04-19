@@ -15,6 +15,13 @@ type AttachmentRecord {
   extension: String!
 }
 
+type CardItem {
+  id: String!
+  name: String!
+  quantity: Float!
+  price: Float!
+}
+
 type Category {
   createdAt: DateTime!
   updatedAt: DateTime!
@@ -23,7 +30,10 @@ type Category {
   owner: ID!
   parent: Category
   status: CategoryStatus!
+  children: [Category!]!
   price: Float!
+  minPrice: Float!
+  maxPrice: Float!
 }
 
 input CategoryInput {
@@ -87,14 +97,14 @@ type Mutation {
   createProduct(productInput: ProductInput!): Product!
   updateProduct(productInput: UpdateProductInput!, productId: ID!): Product!
   removeProduct(productId: ID!): Boolean!
+  createCategory(categoryInput: CategoryInput!): Category!
+  updateCategory(categoryInput: UpdateCategoryInput!, categoryId: ID!): Category!
+  removeCategory(categoryId: ID!): Boolean!
   updateCurrentUserPassword(newPassword: String!, oldPassword: String!): Boolean!
   closeAccount: Boolean!
   updateUser(userInput: UserInput!): User!
   register(registerInput: RegisterInput!): Session!
   updatePassword(updatePasswordDto: UpdatePasswordDto!): Boolean!
-  createCategory(categoryInput: CategoryInput!): Category!
-  updateCategory(categoryInput: UpdateCategoryInput!, categoryId: ID!): Category!
-  removeCategory(categoryId: ID!): Boolean!
   createTask(taskInput: TaskInput!): Task!
   updateTask(taskInput: UpdateTaskInput!, taskId: ID!): Task!
   removeTask(taskId: ID!): Boolean!
@@ -104,6 +114,9 @@ type Mutation {
   createDiscussionMessage(discussionMessageInput: DiscussionMessageInput!): DiscussionMessage!
   updateDiscussionMessage(discussionMessageInput: UpdateDiscussionMessageInput!, discussionMessageId: ID!): DiscussionMessage!
   removeDiscussionMessage(discussionMessageId: ID!): Boolean!
+  chargeCard(paymentInput: Any!): Payment!
+  updatePayment(paymentInput: UpdatePaymentInput!, paymentId: ID!): Payment!
+  removePayment(paymentId: ID!): Boolean!
 }
 
 """OrderBy direction"""
@@ -117,16 +130,36 @@ input OrderByInput {
   direction: OrderByDirection!
 }
 
+type Payment {
+  firstname: String
+  lastname: String
+  email: String
+  phone: String
+  address: String
+  country: String
+  town: String
+  postalcode: String
+  carditems: [CardItem!]
+  paymentInfos: Any
+  charge: Any
+}
+
+input PaymentInput {
+  id: String!
+}
+
 type Product {
   id: ID!
   name: String!
   description: String
+  type: String
   price: Float
   code: String
   quota: Float
   category: Category
   cover: AttachmentRecord
   gallery: [AttachmentRecord!]
+  variants: [Any!]
 }
 
 input ProductInput {
@@ -136,18 +169,25 @@ input ProductInput {
 type Query {
   fetchMyProduct(productId: ID!): Product!
   fetchMyProducts(clientFilter: ClientFilterInput): [Product!]!
+  fetchMyCategories(clientFilter: ClientFilterInput): [Category!]!
+  fetchCategory(categoryId: ID!): Category!
+  fetchCategoryByName(categoryName: String!): Category!
+  fetchCategories(clientFilter: ClientFilterInput!): [Category!]!
+  fetchCategoriesForMarket: [Category!]!
+  fetchMainCategoriesForMarket: [Category!]!
+  fetchProduct(productId: ID!): Product!
+  fetchProducts(categoryId: ID): [Product!]!
   fetchCurrentUser: User!
   login(loginInput: LoginInput!): Session!
   resetPassword(email: String!): String!
-  fetchMyCategories(clientFilter: ClientFilterInput): [Category!]!
-  fetchCategory(categoryId: ID!): Category!
-  fetchCategories(clientFilter: ClientFilterInput!): [Category!]!
   fetchTask(taskId: ID!): Task!
   fetchTasks(clientFilter: ClientFilterInput!): [Task!]!
   fetchChatMessage(chatMessageId: ID!): ChatMessage!
   fetchChatMessages(clientFilter: ClientFilterInput!): [ChatMessage!]!
   fetchDiscussionMessage(discussionMessageId: ID!): DiscussionMessage!
   fetchDiscussionMessages(clientFilter: ClientFilterInput!): [DiscussionMessage!]!
+  fetchPayment(paymentId: ID!): Payment!
+  fetchPayments(clientFilter: ClientFilterInput!): [Payment!]!
 }
 
 input RegisterInput {
@@ -188,6 +228,10 @@ input UpdatePasswordDto {
   password: String!
   resetToken: String!
   resetCode: Float!
+}
+
+input UpdatePaymentInput {
+  id: String!
 }
 
 input UpdateProductInput {

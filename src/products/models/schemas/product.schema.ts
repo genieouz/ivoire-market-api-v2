@@ -32,4 +32,5 @@ export const productSchema = new Schema({
   gallery: {
     type: [attachmentRecordSchema]
   },
+  variants: [{ type: String, default: [] }]
 });

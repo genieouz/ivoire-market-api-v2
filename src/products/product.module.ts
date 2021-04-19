@@ -10,6 +10,8 @@ import { AttachmentModule } from '~/attachment/attachment.module';
 import { ProductController } from '~/products/controllers/product.controller';
 import { ImagesModule } from '~/multimedia/images/images.module';
 import { ProductPublicController } from '~/products/controllers/product-public.controller';
+import { CategoryModule } from '~/category/category.module';
+import { ProductPublicResolver } from '~/products/resolvers/product-public.resolver';
 
 @Module({
   imports: [
@@ -18,12 +20,14 @@ import { ProductPublicController } from '~/products/controllers/product-public.c
     ]),
     AttachmentModule,
     forwardRef(() => ImagesModule),
+    forwardRef(() => CategoryModule)
   ],
   controllers: [ProductController, ProductPublicController],
   providers: [
       ProductService,
       ProductResolver,
-      ProductPropertyResolver
+      ProductPropertyResolver,
+      ProductPublicResolver
   ],
   exports: [ProductService]
 })

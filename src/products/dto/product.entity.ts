@@ -3,6 +3,8 @@ import { ICategory } from '~/category/models/interfaces/category.interface';
 import { Category } from '~/category/dto/category.entity';
 import { ImageSizes } from '~/commons/graphql/types-and-inputs/image-sizes.type';
 import { AttachmentRecord } from '~/attachment/dto/attachment-record.type';
+import { AnyObject } from '~/commons/typings/typescript';
+import { Any } from '~/commons/graphql/scalars/any.scalar';
 
 @ObjectType()
 export class Product {
@@ -14,6 +16,9 @@ export class Product {
 
     @Field({ nullable: true })
     description: string;
+
+    @Field({ nullable: true })
+    type: string;
 
     @Field({ nullable: true })
     price: number;
@@ -32,4 +37,7 @@ export class Product {
 
     @Field(type => [AttachmentRecord], { nullable: true })
     gallery: AttachmentRecord[];
+
+    @Field(type => Any, { nullable: true })
+    variants: AnyObject[];
 }
