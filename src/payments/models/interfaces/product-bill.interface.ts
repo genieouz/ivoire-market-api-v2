@@ -2,7 +2,7 @@ import { Document } from 'mongoose';
 import { AnyObject } from '~/commons/typings/typescript';
 import { IcardItems } from './carditems.interface';
 
-export interface IPayment extends Document {
+export interface IProductBill extends Document {
     firstname: string;
     lastname: string;
     email: string;
@@ -11,7 +11,7 @@ export interface IPayment extends Document {
     country: string;
     town: string;
     postalcode: string;
-    cartitems: IcardItems[];
+    cartItems: IcardItems;
     paymentInfos: AnyObject;
     charge: AnyObject;
 }

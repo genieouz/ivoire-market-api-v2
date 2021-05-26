@@ -5,7 +5,7 @@ import {
     IDeleteResult,
     IUpdateResult,
 } from '~/commons/typings/mongoose.typings';
-import { AnyObject } from '~/commons/typings/typescript';
+import { AnyObject, DocId } from '~/commons/typings/typescript';
 import { ObjectId } from 'bson';
 import {
     mergeQueryFilters,
@@ -13,6 +13,8 @@ import {
     normalizeClientFilterForSearch,
 } from '~/commons/utils';
 import { FindManyResult } from '../database/typings/find-many-result.interface';
+import { isEmpty } from 'lodash';
+import { AggregationQuery } from '~/commons/typings/mongodb.typings';
 
 export abstract class AbstractService<T extends Document> {
     private abstractModel: Model<T>;
@@ -20,6 +22,40 @@ export abstract class AbstractService<T extends Document> {
     protected constructor(model: Model<T>) {
         this.abstractModel = model;
     }
+
+    public async aggregateMany<I>(query: AggregationQuery): Promise<I[]> {
+        const aggregate = this.abstractModel.aggregate(query);
+        aggregate.options = { allowDiskUse: true };
+        return aggregate.exec();
+    }
+
+    public async aggregateOne<I>(query: AggregationQuery): Promise<I> {
+        const aggregate = this.abstractModel.aggregate(query);
+        aggregate.options = { allowDiskUse: true };
+        const result = await aggregate.exec();
+        return !isEmpty(result) ? result.pop() : null;
+      }
+    
+      public async aggregateIds(query: AggregationQuery): Promise<DocId[]> {
+        const result = await this.abstractModel.aggregate(query);
+        return !isEmpty(result) ? result.pop().ids : [];
+      }
+    
+      public async aggregateValue<I>(query: AggregationQuery): Promise<I> {
+        const result = await this.abstractModel.aggregate(query);
+        return !isEmpty(result) ? result.pop().result : null;
+      }
+    
+      public async aggregateTotal(query: AggregationQuery): Promise<number> {
+        const result = await this.abstractModel.aggregate(query);
+        return !isEmpty(result) ? result.pop().total : 0;
+      }
+
+      public async aggregateOneInteger(query: AggregationQuery, prop: string): Promise<number> {
+        const result = await this.abstractModel.aggregate(query);
+        return !isEmpty(result) ? result.pop()[prop] : 0;
+      }
+
 
     public async insertOne(payload: AnyObject): Promise<T> {
         const course = await this.abstractModel.create(payload);

@@ -7,47 +7,38 @@ import { UpdatePaymentInput } from "~/payments/dto/update-payment.input";
 import { ID } from "type-graphql";
 import { ClientFilterInput } from "~/commons/graphql/types-and-inputs/client-filter.input";
 import { Any } from "~/commons/graphql/scalars/any.scalar";
+import { UseGuards } from "@nestjs/common";
+import { AuthGuard } from "~/auth/guards/auth-guard";
+import { CurrentUser } from "~/auth/decorators/current-user.decorator";
+import { IUser } from "~/user/interfaces/user.interface";
+import { IProductBill } from "../models/interfaces/product-bill.interface";
+import { ProductBill } from "../dto/product-biil.entity";
 
-
+@UseGuards(AuthGuard)
 @Resolver()
 export class PaymentResolver {
     constructor(
         private readonly paymentService: PaymentService
     ) { }
 
-    @Mutation(returns => Payment)
-    chargeCard(
-        @Args({ name: 'paymentInput', type: () => Any }) paymentInput: PaymentInput,
-    ): Promise<IPayment> {
-        return this.paymentService.chargeCard(paymentInput);
-    }
+    // @Query(returns => Payment)
+    // fetchPayment(
+    //     @Args({ name: 'paymentId', type: () => ID }) paymentId: string,
+    // ): Promise<IPayment> {
+    //     return this.paymentService.findOneByIdOrFail(paymentId);
+    // }
 
-    @Mutation(returns => Payment)
-    updatePayment(
-        @Args({ name: 'paymentId', type: () => ID }) paymentId: string,
-        @Args({ name: 'paymentInput', type: () => UpdatePaymentInput }) paymentInput: UpdatePaymentInput,
-    ): Promise<IPayment> {
-        return this.paymentService.updateOneById(paymentId, paymentInput);
-    }
+    // @Query(returns => [Payment])
+    // fetchPayments(
+    //     @Args({ name: 'clientFilter', type: () => ClientFilterInput }) clientFilter: ClientFilterInput,
+    // ): Promise<IPayment[]> {
+    //     return this.paymentService.find({}, clientFilter);
+    // }
 
-    @Query(returns => Payment)
-    fetchPayment(
-        @Args({ name: 'paymentId', type: () => ID }) paymentId: string,
-    ): Promise<IPayment> {
-        return this.paymentService.findOneByIdOrFail(paymentId);
-    }
-
-    @Query(returns => [Payment])
-    fetchPayments(
-        @Args({ name: 'clientFilter', type: () => ClientFilterInput }) clientFilter: ClientFilterInput,
-    ): Promise<IPayment[]> {
-        return this.paymentService.find({}, clientFilter);
-    }
-
-    @Mutation(returns => Boolean)
-    removePayment(
-        @Args({ name: 'paymentId', type: () => ID }) paymentId: string,
-    ): Promise<boolean> {
-        return this.paymentService.removeOneByIdOrFail(paymentId);
+    @Query(returns => [ProductBill])
+    fetchProviderBills(
+        @CurrentUser() currentUser: IUser
+    ): Promise<IProductBill[]> {
+        return this.paymentService.fetchProviderBills(currentUser._id);
     }
 }

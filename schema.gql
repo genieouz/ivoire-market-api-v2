@@ -64,6 +64,20 @@ input ClientFilterInput {
   orderBy: OrderByInput
 }
 
+type Comment {
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  discussionId: String!
+  content: String!
+  postedBy: String!
+}
+
+input CommentInput {
+  discussionId: String!
+  content: String!
+  postedBy: String!
+}
+
 """
 The javascript `Date` as string. Type represents date and time as the ISO Date string.
 """
@@ -75,6 +89,22 @@ type DiscussionMessage {
 
 input DiscussionMessageInput {
   id: String!
+}
+
+type ForumMessage {
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  id: ID!
+  subject: String!
+  content: String!
+  postedBy: String!
+  comments: [Comment!]!
+}
+
+input ForumMessageInput {
+  subject: String!
+  content: String!
+  postedBy: String!
 }
 
 type GqlTimestamp {
@@ -115,8 +145,12 @@ type Mutation {
   updateDiscussionMessage(discussionMessageInput: UpdateDiscussionMessageInput!, discussionMessageId: ID!): DiscussionMessage!
   removeDiscussionMessage(discussionMessageId: ID!): Boolean!
   chargeCard(paymentInput: Any!): Payment!
-  updatePayment(paymentInput: UpdatePaymentInput!, paymentId: ID!): Payment!
-  removePayment(paymentId: ID!): Boolean!
+  createForumMessage(forumMessageInput: ForumMessageInput!): ForumMessage!
+  updateForumMessage(forumMessageInput: UpdateForumMessageInput!, forumMessageId: ID!): ForumMessage!
+  removeForumMessage(forumMessageId: ID!): Boolean!
+  createComment(commentInput: CommentInput!): Comment!
+  updateComment(commentInput: UpdateCommentInput!, commentId: ID!): Comment!
+  removeComment(commentId: ID!): Boolean!
 }
 
 """OrderBy direction"""
@@ -162,6 +196,20 @@ type Product {
   variants: [Any!]
 }
 
+type ProductBill {
+  firstname: String
+  lastname: String
+  email: String
+  phone: String
+  address: String
+  country: String
+  town: String
+  postalcode: String
+  cartItem: CardItem
+  paymentInfos: Any
+  charge: Any
+}
+
 input ProductInput {
   id: String!
 }
@@ -186,8 +234,11 @@ type Query {
   fetchChatMessages(clientFilter: ClientFilterInput!): [ChatMessage!]!
   fetchDiscussionMessage(discussionMessageId: ID!): DiscussionMessage!
   fetchDiscussionMessages(clientFilter: ClientFilterInput!): [DiscussionMessage!]!
-  fetchPayment(paymentId: ID!): Payment!
-  fetchPayments(clientFilter: ClientFilterInput!): [Payment!]!
+  fetchProviderBills: [ProductBill!]!
+  fetchForumMessage(forumMessageId: ID!): ForumMessage!
+  fetchForumMessages: [ForumMessage!]!
+  fetchComment(commentId: ID!): Comment!
+  fetchComments(clientFilter: ClientFilterInput!): [Comment!]!
 }
 
 input RegisterInput {
@@ -220,8 +271,17 @@ input UpdateChatMessageInput {
   id: String!
 }
 
+input UpdateCommentInput {
+  id: String!
+}
+
 input UpdateDiscussionMessageInput {
   id: String!
+}
+
+input UpdateForumMessageInput {
+  subject: String!
+  content: String!
 }
 
 input UpdatePasswordDto {

@@ -1,3 +1,5 @@
+import { ObjectId } from 'bson';
+
 export interface AnyObject {
   [key: string]: any;
 }
@@ -15,3 +17,5 @@ export type FuncType = () => void;
 export type MapType = Record<string, any>;
 
 export type LatLongType = [number, number];
+
+export type DocId = string | ObjectId;

@@ -38,7 +38,8 @@ export class CategoryPropertyResolver {
     async maxPrice(
         @Parent() category: ICategory
     ): Promise<number> {
-        const prices = (await this.productService.find({ category: category._id })).map(product => product.price);
+        const categories = (await this.categoryService.find({ parent: category._id })).map(cat => cat._id);
+        const prices = (await this.productService.find({ category: { $in: [category._id, ...categories] } })).map(product => product.price);
         if(!prices.length)
             return 0;
         return Math.max(...prices);
@@ -48,7 +49,8 @@ export class CategoryPropertyResolver {
     async minPrice(
         @Parent() category: ICategory
     ): Promise<number> {
-        const prices = (await this.productService.find({ category: category._id })).map(product => product.price);
+        const categories = (await this.categoryService.find({ parent: category._id })).map(cat => cat._id);
+        const prices = (await this.productService.find({ category: { $in: [category._id, ...categories] } })).map(product => product.price);
         if(!prices.length)
             return 0;
         return Math.min(...prices);
