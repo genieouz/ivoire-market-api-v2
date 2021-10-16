@@ -211,7 +211,10 @@ type ProductBill {
 }
 
 input ProductInput {
-  id: String!
+  name: String!
+  description: String
+  price: Float!
+  category: ID
 }
 
 type Query {
@@ -220,7 +223,7 @@ type Query {
   fetchMyCategories(clientFilter: ClientFilterInput): [Category!]!
   fetchCategory(categoryId: ID!): Category!
   fetchCategoryByName(categoryName: String!): Category!
-  fetchCategories(clientFilter: ClientFilterInput!): [Category!]!
+  fetchCategories(clientFilter: ClientFilterInput): [Category!]!
   fetchCategoriesForMarket: [Category!]!
   fetchMainCategoriesForMarket: [Category!]!
   fetchProduct(productId: ID!): Product!

@@ -9,6 +9,9 @@ import { UserState } from "../enums/user-state.enum";
 import { UserInput } from "../dto/user.input";
 import { ID } from "type-graphql";
 import { User } from "../dto/user.entity";
+import {Category} from "~/category/dto/category.entity";
+import {ClientFilterInput} from "~/commons/graphql/types-and-inputs/client-filter.input";
+import {ICategory} from "~/category/models/interfaces/category.interface";
 
 @UseGuards(AuthGuard)
 @Resolver()
@@ -16,7 +19,13 @@ export class UserResover {
     constructor(
         private readonly userService: UserService,
     ) { }
-
+   /* @Query(returns => [User])
+    fetchMyUsers(
+        @Args({ name: 'clientFilter', type: () => ClientFilterInput, nullable: true }) clientFilter: ClientFilterInput,
+        @CurrentUser() currentUser: IUser
+    ): Promise<User[]> {
+        return this.userService.find({ owner: currentUser._id }, clientFilter);
+    }*/
     @Query(returns => User)
     fetchCurrentUser(
         @CurrentUser() currentUser: IUser

@@ -28,10 +28,13 @@ export class CategoryPublicResolver {
     }
 
     @Query(returns => [Category])
-    fetchCategories(
-        @Args({ name: 'clientFilter', type: () => ClientFilterInput }) clientFilter: ClientFilterInput,
+    async fetchCategories(
+        @Args({ name: 'clientFilter', type: () => ClientFilterInput,nullable: true }) clientFilter: ClientFilterInput,
     ): Promise<ICategory[]> {
-        return this.categoryService.find({}, clientFilter);
+        const categories = await this.categoryService.find({}, clientFilter);
+        console.log(categories)
+        return categories;
+        //return this.categoryService.find({}, clientFilter);
     }
 
     @Query(returns => [Category])

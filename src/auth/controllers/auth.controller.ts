@@ -10,6 +10,7 @@ export class AuthController {
 
     @Post('signup')
     signup(@Body() user: RegisterInput): Promise<Session> {
+        console.log('kk')
         return this.authService.signup(user);
     }
 
