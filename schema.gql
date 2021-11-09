@@ -89,6 +89,7 @@ type DiscussionMessage {
 
 input DiscussionMessageInput {
   id: String!
+  message: String!
 }
 
 type ForumMessage {
